@@ -2,3 +2,9 @@ name: XL-MobCoins
 version: '${project.version}'
 main: me.xlucash.xlmobcoins.MobCoinsMain
 api-version: '1.19'
+commands:
+  lizardcoins:
+    description: Zarządzaj swoimi LizardCoins.
+    usage: /<command> [sklep|reload]
+    aliases: [lc, coins, mobcoins, lizardcoin]
+depend: [WildStacker]

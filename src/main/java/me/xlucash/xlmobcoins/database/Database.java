@@ -20,6 +20,6 @@ public abstract class Database {
     }
 
     protected void logConnectionSuccess(String databaseType) {
-        Bukkit.getLogger().info("[XL-Mine] Połączono z bazą danych: " + databaseType);
+        Bukkit.getLogger().info("[XL-MobCoins] Connected to database: " + databaseType);
     }
 }

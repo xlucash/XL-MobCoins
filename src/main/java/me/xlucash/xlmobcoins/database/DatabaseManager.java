@@ -29,14 +29,20 @@ public class DatabaseManager {
 
     private void createTablesIfNotExist() {
         try (Connection connection = database.getConnection(); Statement statement = connection.createStatement()) {
-            // TODO: Create tables if not exist
+            statement.execute(
+                    "CREATE TABLE IF NOT EXISTS mobcoins (uuid VARCHAR(36) NOT NULL PRIMARY KEY, coins DOUBLE NOT NULL);"
+            );
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void getDatabaseConnection() {
-        database.getConnection();
+    public Connection getDatabaseConnection() {
+        try {
+            return database.getConnection();
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     public void closeDatabaseConnection() {
