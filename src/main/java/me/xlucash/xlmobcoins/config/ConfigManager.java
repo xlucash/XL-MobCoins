@@ -1,7 +1,7 @@
 package me.xlucash.xlmobcoins.config;
 
 import me.xlucash.xlmobcoins.MobCoinsMain;
-import me.xlucash.xlmobcoins.utils.CoinsRange;
+import me.xlucash.xlmobcoins.models.CoinsRange;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 

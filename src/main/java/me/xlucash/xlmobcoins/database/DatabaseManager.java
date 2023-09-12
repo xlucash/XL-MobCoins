@@ -32,6 +32,9 @@ public class DatabaseManager {
             statement.execute(
                     "CREATE TABLE IF NOT EXISTS mobcoins (uuid VARCHAR(36) NOT NULL PRIMARY KEY, coins DOUBLE NOT NULL);"
             );
+            statement.execute(
+                    "CREATE TABLE IF NOT EXISTS shop_items (id INT AUTO_INCREMENT PRIMARY KEY, category VARCHAR(50), item_id INT, stock INT, rotation_time TIMESTAMP)"
+            );
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -3,7 +3,7 @@ package me.xlucash.xlmobcoins.listeners;
 import me.xlucash.xlmobcoins.config.ConfigManager;
 import me.xlucash.xlmobcoins.database.PlayerDataManager;
 import me.xlucash.xlmobcoins.hooks.WildStackerHook;
-import me.xlucash.xlmobcoins.utils.CoinsRange;
+import me.xlucash.xlmobcoins.models.CoinsRange;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

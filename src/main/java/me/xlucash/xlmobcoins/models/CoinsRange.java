@@ -1,4 +1,4 @@
-package me.xlucash.xlmobcoins.utils;
+package me.xlucash.xlmobcoins.models;
 
 public class CoinsRange {
     private final double min;

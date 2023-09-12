@@ -26,3 +26,105 @@ mobs:
   IRON_GOLEM:
     min-coins: 6.0
     max-coins: 14.0
+
+shop:
+  rotation-times:
+    normal: ["15:00", "15:10"]
+    premium: ["15:05"]
+
+  items:
+    1:
+      displayname: "Super miecz"
+      material: DIAMOND_SWORD
+      amount: 1
+      stock: 10
+      price: 10.0
+      lore:
+        - "&2Super ostry"
+        - "&7Został wykonany przez..."
+      command: "give %player% diamond_sword 1"
+    2:
+      displayname: "Ekskluzywny eliksir"
+      material: DIRT
+      amount: 1
+      stock: 5
+      price: 10.0
+      lore:
+        - "&2Super Dirt"
+        - "&7Został wykonany przez..."
+      command: "give %player% dirt 1"
+    3:
+      displayname: "Błyszczący diament"
+      material: DIAMOND
+      amount: 5
+      stock: 20
+      price: 10.0
+      lore:
+        - "&bCzysty jak łza"
+        - "&7Niesamowity skarb!"
+      command: "give %player% diamond 5"
+    4:
+      displayname: "Niezniszczalna kilof"
+      material: DIAMOND_PICKAXE
+      amount: 1
+      stock: 8
+      price: 10.0
+      lore:
+        - "&bKopie na głębokość"
+        - "&7Moc w twoich rękach"
+      command: "give %player% diamond_pickaxe 1"
+    5:
+      displayname: "Złoty jabłko"
+      material: GOLDEN_APPLE
+      amount: 3
+      stock: 12
+      price: 10.0
+      lore:
+        - "&6Krzepiący przysmak"
+        - "&7Ozdoba każdego ekwipunku"
+      command: "give %player% golden_apple 3"
+    6:
+      displayname: "Eliksir leczenia"
+      material: POTION
+      amount: 1
+      stock: 15
+      price: 10.0
+      lore:
+        - "&cPrzywraca zdrowie"
+        - "&7Pij z umiarem"
+      command: "give %player% potion{Potion:\"minecraft:healing\"} 1"
+    7:
+      displayname: "Wzmocniony łuk"
+      material: BOW
+      amount: 1
+      stock: 5
+      price: 10.0
+      lore:
+        - "&9Dla prawdziwych łowców"
+        - "&7Został wykonany przez elfy..."
+      command: "give %player% bow 1"
+    8:
+      displayname: "Niewidzialna tarcza"
+      material: SHIELD
+      amount: 1
+      stock: 6
+      price: 10.0
+      lore:
+        - "&cNiewidoczna, ale ochroni cię"
+        - "&7Została zaklęta przez..."
+      command: "give %player% shield 1"
+    9:
+      displayname: "Mikstura szybkości"
+      material: POTION
+      amount: 1
+      stock: 10
+      price: 10.0
+      lore:
+        - "&bBiegaj jak wiatr"
+        - "&7Przygotowana przez czarodziejów..."
+      command: "give %player% potion 1"
+
+  categories:
+    normal: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    premium: [2, 5, 6, 8, 9]
+

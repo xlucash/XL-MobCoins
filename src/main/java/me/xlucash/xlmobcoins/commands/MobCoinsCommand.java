@@ -3,6 +3,8 @@ package me.xlucash.xlmobcoins.commands;
 import me.xlucash.xlmobcoins.MobCoinsMain;
 import me.xlucash.xlmobcoins.config.ConfigManager;
 import me.xlucash.xlmobcoins.database.PlayerDataManager;
+import me.xlucash.xlmobcoins.guis.ShopGUI;
+import me.xlucash.xlmobcoins.utils.ShopManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -16,11 +18,13 @@ public class MobCoinsCommand implements CommandExecutor, TabCompleter {
     private final MobCoinsMain plugin;
     private final ConfigManager configManager;
     private final PlayerDataManager dataManager;
+    private final ShopManager shopManager;
 
-    public MobCoinsCommand(MobCoinsMain plugin, ConfigManager configManager, PlayerDataManager dataManager) {
+    public MobCoinsCommand(MobCoinsMain plugin, ConfigManager configManager, PlayerDataManager dataManager, ShopManager shopManager) {
         this.plugin = plugin;
         this.configManager = configManager;
         this.dataManager = dataManager;
+        this.shopManager = shopManager;
     }
 
     @Override
@@ -38,7 +42,8 @@ public class MobCoinsCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args[0].equalsIgnoreCase("sklep")) {
-            // TODO: Otwórz GUI sklepu dla gracza
+            ShopGUI shopGUI = new ShopGUI(dataManager, shopManager);
+            shopGUI.openFor(player);
             return true;
         }
 
