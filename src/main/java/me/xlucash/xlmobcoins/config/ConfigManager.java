@@ -23,6 +23,7 @@ public class ConfigManager {
     }
 
     public void reloadConfig() {
+        plugin.saveDefaultConfig();
         plugin.reloadConfig();
         config = plugin.getConfig();
     }

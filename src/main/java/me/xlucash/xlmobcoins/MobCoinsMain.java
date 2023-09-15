@@ -5,6 +5,7 @@ import me.xlucash.xlmobcoins.config.ConfigManager;
 import me.xlucash.xlmobcoins.config.ShopConfigManager;
 import me.xlucash.xlmobcoins.database.DatabaseManager;
 import me.xlucash.xlmobcoins.database.PlayerDataManager;
+import me.xlucash.xlmobcoins.hooks.PlaceholderAPIHook;
 import me.xlucash.xlmobcoins.hooks.WildStackerHook;
 import me.xlucash.xlmobcoins.listeners.InventoryListener;
 import me.xlucash.xlmobcoins.listeners.MobKillListener;
@@ -16,8 +17,9 @@ public final class MobCoinsMain extends JavaPlugin {
     private ShopConfigManager shopConfigManager;
     private DatabaseManager databaseManager;
     private PlayerDataManager playerDataManager;
-
     private ShopManager shopManager;
+
+    private PlaceholderAPIHook placeholderAPIHook;
 
     @Override
     public void onEnable() {
@@ -34,7 +36,11 @@ public final class MobCoinsMain extends JavaPlugin {
 
         WildStackerHook.isWildStackerLoaded();
 
-        shopManager = new ShopManager(shopConfigManager, this, databaseManager);
+        shopManager = new ShopManager(shopConfigManager, this, databaseManager, playerDataManager);
+
+        placeholderAPIHook = new PlaceholderAPIHook(this, playerDataManager);
+        placeholderAPIHook.register();
+
 
         this.getCommand("lizardcoins").setExecutor(new MobCoinsCommand(this, configManager, playerDataManager, shopManager));
         this.getCommand("lizardcoins").setTabCompleter(new MobCoinsCommand(this, configManager, playerDataManager, shopManager));

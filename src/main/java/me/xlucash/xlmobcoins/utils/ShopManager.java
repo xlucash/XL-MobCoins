@@ -3,7 +3,10 @@ package me.xlucash.xlmobcoins.utils;
 import me.xlucash.xlmobcoins.MobCoinsMain;
 import me.xlucash.xlmobcoins.config.ShopConfigManager;
 import me.xlucash.xlmobcoins.database.DatabaseManager;
+import me.xlucash.xlmobcoins.database.PlayerDataManager;
 import me.xlucash.xlmobcoins.models.ShopItem;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.Connection;
@@ -18,39 +21,70 @@ public class ShopManager {
     private final ShopConfigManager configManager;
     private final MobCoinsMain plugin;
     private final DatabaseManager databaseManager;
+    private final PlayerDataManager playerDataManager;
     private List<ShopItem> currentNormalShopItems;
     private List<ShopItem> currentPremiumShopItems;
 
-    public ShopManager(ShopConfigManager configManager, MobCoinsMain plugin, DatabaseManager databaseManager) {
+    public ShopManager(ShopConfigManager configManager, MobCoinsMain plugin, DatabaseManager databaseManager, PlayerDataManager playerDataManager) {
         this.configManager = configManager;
         this.plugin = plugin;
         this.databaseManager = databaseManager;
-        scheduleRotation();
+        this.playerDataManager = playerDataManager;
+        startScheduler();
         loadCurrentItems();
     }
 
-    public void scheduleRotation() {
+    public void startScheduler() {
+        scheduleNextRotation();
+    }
+
+    private void scheduleNextRotation() {
         long normalDelay = TimeCalculator.getSecondsToNextRotation(configManager.getNormalRotationTimes());
         long premiumDelay = TimeCalculator.getSecondsToNextRotation(configManager.getPremiumRotationTimes());
 
+        if (normalDelay <= premiumDelay) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    updateNormalShop();
+                    schedulePremiumShopRotation();
+                }
+            }.runTaskLater(plugin, normalDelay * 20);
+        } else {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    updatePremiumShop();
+                    scheduleNormalShopRotation();
+                }
+            }.runTaskLater(plugin, premiumDelay * 20);
+        }
+    }
+
+    private void scheduleNormalShopRotation() {
+        long normalDelay = TimeCalculator.getSecondsToNextRotation(configManager.getNormalRotationTimes());
         new BukkitRunnable() {
             @Override
             public void run() {
                 updateNormalShop();
-                scheduleRotation();
+                schedulePremiumShopRotation();
             }
-        }.runTaskLater(plugin, normalDelay * 20); // 20 tiki = 1 sekunda
+        }.runTaskLater(plugin, normalDelay * 20);
+    }
 
+    private void schedulePremiumShopRotation() {
+        long premiumDelay = TimeCalculator.getSecondsToNextRotation(configManager.getPremiumRotationTimes());
         new BukkitRunnable() {
             @Override
             public void run() {
                 updatePremiumShop();
-                scheduleRotation();
+                scheduleNormalShopRotation();
             }
         }.runTaskLater(plugin, premiumDelay * 20);
     }
 
     private void updateNormalShop() {
+        configManager.resetStocks();
         List<Integer> availableNormalItems = new ArrayList<>(configManager.getCategories().get("normal"));
         Collections.shuffle(availableNormalItems);
 
@@ -64,6 +98,7 @@ public class ShopManager {
     }
 
     private void updatePremiumShop() {
+        configManager.resetStocks();
         List<Integer> availablePremiumItems = new ArrayList<>(configManager.getCategories().get("premium"));
         Collections.shuffle(availablePremiumItems);
 
@@ -126,11 +161,10 @@ public class ShopManager {
 
     private void saveToDatabase(String category, List<ShopItem> items) {
         String deleteQuery = "DELETE FROM shop_items WHERE category = ?";
-        String updateQuery = "UPDATE shop_items SET stock = ?, rotation_time = datetime('now') WHERE category = ? AND item_id = ?";
-        String insertQuery = "INSERT INTO shop_items (category, item_id, stock, rotation_time) VALUES (?, ?, ?, datetime('now'))";
+        String updateQuery = "UPDATE shop_items SET stock = ? WHERE category = ? AND item_id = ?";
+        String insertQuery = "INSERT INTO shop_items (category, item_id, stock) VALUES (?, ?, ?)";
 
         try (Connection connection = databaseManager.getDatabaseConnection()) {
-            // Usuń wszystkie wpisy dla danej kategorii
             try (PreparedStatement deletePs = connection.prepareStatement(deleteQuery)) {
                 deletePs.setString(1, category);
                 deletePs.executeUpdate();
@@ -178,4 +212,79 @@ public class ShopManager {
         return items;
     }
 
+    public ShopItem getShopItemByDisplayName(String displayName) {
+        for (ShopItem item : getCurrentNormalShopItems()) {
+            String configDisplayName = ChatColor.translateAlternateColorCodes('&', item.getDisplayName());
+            if (ChatColor.stripColor(configDisplayName).equals(displayName)) {
+                return item;
+            }
+        }
+
+        for (ShopItem item : getCurrentPremiumShopItems()) {
+            String configDisplayName = ChatColor.translateAlternateColorCodes('&', item.getDisplayName());
+            if (ChatColor.stripColor(configDisplayName).equals(displayName)) {
+                return item;
+            }
+        }
+
+        return null;
+    }
+
+    public boolean purchaseItem(Player player, ShopItem shopItem) {
+        double playerCoins = playerDataManager.getCoins(player.getUniqueId());
+        double itemPrice = shopItem.getPrice();
+
+        if (playerCoins < itemPrice || playerCoins - itemPrice < 0) {
+            player.sendMessage(ChatColor.RED + "Nie masz wystarczającej ilości coinsów!");
+            return false;
+        } else {
+            playerDataManager.removeCoins(player.getUniqueId(), itemPrice);
+            return true;
+        }
+    }
+
+    public void decreaseStock(int itemId) {
+        String query = "UPDATE shop_items SET stock = CASE WHEN stock > 0 THEN stock - 1 ELSE 0 END WHERE item_id = ?";
+        try (Connection connection = databaseManager.getDatabaseConnection();
+             PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setInt(1, itemId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public int getStockFromDatabase(int itemId) {
+        String query = "SELECT stock FROM shop_items WHERE item_id = ?";
+        try (Connection connection = databaseManager.getDatabaseConnection();
+             PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setInt(1, itemId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("stock");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    public boolean isOutOfStock(int shopItemId) {
+        return getStockFromDatabase(shopItemId) <= 0;
+    }
+
+    public boolean attemptPurchase(Player player, ShopItem shopItem) {
+        if (isOutOfStock(shopItem.getId())) {
+            player.sendMessage(ChatColor.RED + "Ten przedmiot jest wyprzedany!");
+            return false;
+        }
+
+        if (purchaseItem(player, shopItem)) {
+            decreaseStock(shopItem.getId());
+            player.sendMessage(ChatColor.GREEN + "Pomyślnie zakupiłeś przedmiot!");
+            return true;
+        }
+
+        return false;
+    }
 }

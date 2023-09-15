@@ -37,7 +37,7 @@ public class MobCoinsCommand implements CommandExecutor, TabCompleter {
 
         if (args.length == 0) {
             double coins = dataManager.getCoins(player.getUniqueId());
-            player.sendMessage("Posiadasz " + coins + " coinsów.");
+            player.sendMessage("§7Posiadasz §a" + coins + " coinsów.");
             return true;
         }
 
@@ -49,11 +49,11 @@ public class MobCoinsCommand implements CommandExecutor, TabCompleter {
 
         if (args[0].equalsIgnoreCase("reload")) {
             if (!player.hasPermission("lizardcoins.reload")) {
-                player.sendMessage("Nie masz uprawnień do tej komendy.");
+                player.sendMessage("§cNie masz uprawnień do tej komendy.");
                 return true;
             }
             configManager.reloadConfig();
-            player.sendMessage("Konfiguracja została przeładowana.");
+            player.sendMessage("§aKonfiguracja została przeładowana.");
             return true;
         }
 

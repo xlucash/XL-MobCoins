@@ -71,4 +71,10 @@ public class ShopConfigManager {
     public List<String> getPremiumRotationTimes() {
         return premiumRotationTimes;
     }
+    public void resetStocks() {
+        for (ShopItem item : shopItems.values()) {
+            int defaultStock = config.getInt("shop.items." + item.getId() + ".stock");
+            item.setStock(defaultStock);
+        }
+    }
 }
