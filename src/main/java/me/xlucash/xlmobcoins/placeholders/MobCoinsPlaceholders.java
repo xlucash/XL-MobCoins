@@ -44,6 +44,11 @@ public class MobCoinsPlaceholders extends PlaceholderExpansion {
             return String.valueOf(df.format(playerDataManager.getCoins(player.getUniqueId())));
         }
 
+        // %xlmobcoins_coins_int%
+        if (params.equalsIgnoreCase("coins_int")) {
+            return String.valueOf((int) playerDataManager.getCoins(player.getUniqueId()));
+        }
+
         return null;
     }
 }
