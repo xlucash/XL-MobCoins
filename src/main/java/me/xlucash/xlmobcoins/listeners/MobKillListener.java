@@ -4,6 +4,8 @@ import me.xlucash.xlmobcoins.config.ConfigManager;
 import me.xlucash.xlmobcoins.database.PlayerDataManager;
 import me.xlucash.xlmobcoins.hooks.WildStackerHook;
 import me.xlucash.xlmobcoins.models.CoinsRange;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -35,14 +37,20 @@ public class MobKillListener implements Listener {
             double coins = 0;
 
             for (int i = 0; i < stackAmount; i++) {
-                double randomValue = new Random().nextDouble(range.getMin(), range.getMax());
-                coins += randomValue;
+                if (new Random().nextInt(100) < range.getChance()) {
+                    double randomValue = new Random().nextDouble(range.getMin(), range.getMax());
+                    coins += randomValue;
+                }
+            }
+
+            if (coins == 0) {
+                return;
             }
 
             BigDecimal coinsRounded = new BigDecimal(coins).setScale(2, RoundingMode.HALF_DOWN);
 
             playerDataManager.addCoins(player.getUniqueId(), coinsRounded.doubleValue());
-            player.sendMessage("§fZdobyłeś §a+" + coinsRounded + " §fcoinsów za zabicie moba.");
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§fZdobyłeś §a+" + coinsRounded + " §fcoinsów za zabicie moba."));
         }
     }
 }

@@ -59,7 +59,8 @@ public class ConfigManager {
         for (String mob : section.getKeys(false)) {
             double min = section.getInt(mob + ".min-coins");
             double max = section.getInt(mob + ".max-coins");
-            mobs.put(mob, new CoinsRange(min, max));
+            int chance = section.getInt(mob + ".chance");
+            mobs.put(mob, new CoinsRange(min, max, chance));
         }
 
         return mobs;
