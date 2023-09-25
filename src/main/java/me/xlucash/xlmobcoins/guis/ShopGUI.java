@@ -15,7 +15,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,15 +61,15 @@ public class ShopGUI {
 
         ItemStack normalResetTimeItem = new ItemStack(Material.CLOCK);
         ItemMeta normalResetTimeMeta = normalResetTimeItem.getItemMeta();
-        normalResetTimeMeta.setDisplayName("§6§lSklep Zwykly");
-        normalResetTimeMeta.setLore(Collections.singletonList("§7Nowy sklep za: §e" + shopManager.getTimeUntilNextNormalShopReset()));
+        normalResetTimeMeta.setDisplayName("§6§lZWYKLA OFERTA");
+        normalResetTimeMeta.setLore(Arrays.asList("§7Nowy sklep za: §e" + shopManager.getTimeUntilNextNormalShopReset(), "§7§o(( Przedmioty ze zwyklej oferty zmieniaja sie codziennie o 14:00 i 22:00 ))"));
         normalResetTimeItem.setItemMeta(normalResetTimeMeta);
         inv.setItem(11, normalResetTimeItem); // Slot 12
 
         ItemStack premiumResetTimeItem = new ItemStack(Material.CLOCK);
         ItemMeta premiumResetTimeMeta = premiumResetTimeItem.getItemMeta();
-        premiumResetTimeMeta.setDisplayName("§6§lSklep Premium");
-        premiumResetTimeMeta.setLore(Collections.singletonList("§7Nowy sklep za: §e" + shopManager.getTimeUntilNextPremiumShopReset()));
+        premiumResetTimeMeta.setDisplayName("§6§lOFERTA SPECJALNA");
+        premiumResetTimeMeta.setLore(Arrays.asList("§7Nowy sklep za: §e" + shopManager.getTimeUntilNextPremiumShopReset(), "§7§o(( Przedmioty z oferty specjalnej zmieniaja sie codziennie o 18:00 ))"));
         premiumResetTimeItem.setItemMeta(premiumResetTimeMeta);
         inv.setItem(15, premiumResetTimeItem);
 

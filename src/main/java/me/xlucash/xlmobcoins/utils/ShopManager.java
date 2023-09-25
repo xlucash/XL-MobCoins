@@ -5,6 +5,7 @@ import me.xlucash.xlmobcoins.config.ShopConfigManager;
 import me.xlucash.xlmobcoins.database.DatabaseManager;
 import me.xlucash.xlmobcoins.database.PlayerDataManager;
 import me.xlucash.xlmobcoins.models.ShopItem;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -94,6 +95,11 @@ public class ShopManager {
             currentNormalShopItems.add(configManager.getShopItems().get(availableNormalItems.get(i)));
         }
 
+        Bukkit.broadcastMessage( " ");
+        Bukkit.broadcastMessage( "§e§lPRZEDMIOTY ZE ZWYKLEJ OFERTY ZOSTALY ODSWIEZONE!");
+        Bukkit.broadcastMessage( "§7(( Sprawdz nowe przedmioty /coins sklep ))");
+        Bukkit.broadcastMessage( " ");
+
         saveToDatabase("normal", currentNormalShopItems);
     }
 
@@ -107,6 +113,11 @@ public class ShopManager {
         for (int i = 0; i < 2 && i < availablePremiumItems.size(); i++) {
             currentPremiumShopItems.add(configManager.getShopItems().get(availablePremiumItems.get(i)));
         }
+
+        Bukkit.broadcastMessage(" ");
+        Bukkit.broadcastMessage("§e§lPRZEDMIOTY Z OFERTY SPECJALNEJ ZOSTALY ODSWIEZONE!");
+        Bukkit.broadcastMessage("§7(( Sprawdz nowe przedmioty /coins sklep ))");
+        Bukkit.broadcastMessage(" ");
 
         saveToDatabase("premium", currentPremiumShopItems);
     }
