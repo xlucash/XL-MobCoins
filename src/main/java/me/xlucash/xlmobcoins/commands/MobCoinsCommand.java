@@ -57,6 +57,61 @@ public class MobCoinsCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        if (args[0].equalsIgnoreCase("give"))
+        {
+            if (!player.hasPermission("lizardcoins.give")) {
+                player.sendMessage("§cNie masz uprawnień do tej komendy.");
+                return true;
+            }
+
+            if (args.length < 3)
+            {
+                player.sendMessage("§cUżycie: /mobcoins give <gracz> <ilość>");
+                return true;
+            }
+
+            Player target = plugin.getServer().getPlayer(args[1]);
+            int amount = Integer.parseInt(args[2]);
+
+            if (target == null)
+            {
+                player.sendMessage("§cNie znaleziono gracza o podanej nazwie.");
+                return true;
+            }
+
+            dataManager.addCoins(target.getUniqueId(), amount);
+            player.sendMessage("§aDodano " + amount + " coinsów graczowi " + target.getName() + "!");
+            target.sendMessage("§fOtrzymałeś §a" + amount + " coinsów!");
+            return true;
+        }
+
+        if (args[0].equalsIgnoreCase("set"))
+        {
+            if (!player.hasPermission("lizardcoins.set")) {
+                player.sendMessage("§cNie masz uprawnień do tej komendy.");
+                return true;
+            }
+
+            if (args.length < 3)
+            {
+                player.sendMessage("§cUżycie: /mobcoins set <gracz> <ilość>");
+                return true;
+            }
+
+            Player target = plugin.getServer().getPlayer(args[1]);
+            int amount = Integer.parseInt(args[2]);
+
+            if (target == null)
+            {
+                player.sendMessage("§cNie znaleziono gracza o podanej nazwie.");
+                return true;
+            }
+
+            dataManager.setCoins(target.getUniqueId(), amount);
+            player.sendMessage("§aUstawiono " + amount + " coinsów graczowi " + target.getName() + "!");
+            return true;
+        }
+
         return false;
     }
 
@@ -69,6 +124,12 @@ public class MobCoinsCommand implements CommandExecutor, TabCompleter {
             }
             if ("reload".startsWith(args[0].toLowerCase()) && sender.hasPermission("lizardcoins.reload")) {
                 completions.add("reload");
+            }
+            if ("give".startsWith(args[0].toLowerCase()) && sender.hasPermission("lizardcoins.give")) {
+                completions.add("give");
+            }
+            if ("set".startsWith(args[0].toLowerCase()) && sender.hasPermission("lizardcoins.set")) {
+                completions.add("set");
             }
             return completions;
         }
