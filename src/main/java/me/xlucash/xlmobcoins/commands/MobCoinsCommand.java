@@ -29,25 +29,35 @@ public class MobCoinsCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("Ta komenda jest dostępna tylko dla graczy!");
-            return true;
-        }
-        Player player = (Player) sender;
 
         if (args.length == 0) {
+            if (!(sender instanceof Player)) {
+                sender.sendMessage("Ta komenda jest dostępna tylko dla graczy!");
+                return true;
+            }
+            Player player = (Player) sender;
             double coins = dataManager.getCoins(player.getUniqueId());
             player.sendMessage("§7Posiadasz §a" + coins + " coinsów.");
             return true;
         }
 
         if (args[0].equalsIgnoreCase("sklep")) {
+            if (!(sender instanceof Player)) {
+                sender.sendMessage("Ta komenda jest dostępna tylko dla graczy!");
+                return true;
+            }
+            Player player = (Player) sender;
             ShopGUI shopGUI = new ShopGUI(dataManager, shopManager);
             shopGUI.openFor(player);
             return true;
         }
 
         if (args[0].equalsIgnoreCase("reload")) {
+            if (!(sender instanceof Player)) {
+                sender.sendMessage("Ta komenda jest dostępna tylko dla graczy!");
+                return true;
+            }
+            Player player = (Player) sender;
             if (!player.hasPermission("lizardcoins.reload")) {
                 player.sendMessage("§cNie masz uprawnień do tej komendy.");
                 return true;
@@ -59,14 +69,14 @@ public class MobCoinsCommand implements CommandExecutor, TabCompleter {
 
         if (args[0].equalsIgnoreCase("give"))
         {
-            if (!player.hasPermission("lizardcoins.give")) {
-                player.sendMessage("§cNie masz uprawnień do tej komendy.");
+            if (sender instanceof Player && !sender.hasPermission("lizardcoins.give")) {
+                sender.sendMessage("§cNie masz uprawnień do tej komendy.");
                 return true;
             }
 
             if (args.length < 3)
             {
-                player.sendMessage("§cUżycie: /mobcoins give <gracz> <ilość>");
+                sender.sendMessage("§cUżycie: /mobcoins give <gracz> <ilość>");
                 return true;
             }
 
@@ -75,18 +85,23 @@ public class MobCoinsCommand implements CommandExecutor, TabCompleter {
 
             if (target == null)
             {
-                player.sendMessage("§cNie znaleziono gracza o podanej nazwie.");
+                sender.sendMessage("§cNie znaleziono gracza o podanej nazwie.");
                 return true;
             }
 
             dataManager.addCoins(target.getUniqueId(), amount);
-            player.sendMessage("§aDodano " + amount + " coinsów graczowi " + target.getName() + "!");
+            sender.sendMessage("§aDodano " + amount + " coinsów graczowi " + target.getName() + "!");
             target.sendMessage("§fOtrzymałeś §a" + amount + " coinsów!");
             return true;
         }
 
         if (args[0].equalsIgnoreCase("set"))
         {
+            if (!(sender instanceof Player)) {
+                sender.sendMessage("Ta komenda jest dostępna tylko dla graczy!");
+                return true;
+            }
+            Player player = (Player) sender;
             if (!player.hasPermission("lizardcoins.set")) {
                 player.sendMessage("§cNie masz uprawnień do tej komendy.");
                 return true;
