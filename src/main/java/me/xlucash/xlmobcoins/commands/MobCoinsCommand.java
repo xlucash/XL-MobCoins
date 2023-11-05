@@ -67,6 +67,56 @@ public class MobCoinsCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        if (args[0].equalsIgnoreCase("przelej")) {
+            if (!(sender instanceof Player)) {
+                sender.sendMessage("Ta komenda jest dostępna tylko dla graczy!");
+                return true;
+            }
+
+            if (args.length < 3)
+            {
+                sender.sendMessage("§cUżycie: /coins przelej <gracz> <ilość>");
+                return true;
+            }
+
+            Player target = plugin.getServer().getPlayer(args[1]);
+            double amount;
+
+            try {
+                amount = Double.parseDouble(args[2]);
+            } catch (NumberFormatException e) {
+                sender.sendMessage("§cIlość coinsów musi być liczbą!");
+                return true;
+            }
+
+            if (target == null)
+            {
+                sender.sendMessage("§cNie znaleziono gracza o podanym nicku.");
+                return true;
+            }
+
+            if (target.getUniqueId().equals(((Player) sender).getUniqueId())) {
+                sender.sendMessage("§cNie możesz przelać sobie coinsów!");
+                return true;
+            }
+
+            if (amount < 100) {
+                sender.sendMessage("§cNie możesz przelać mniej niż 100 coinsów!");
+                return true;
+            }
+
+            if (amount > dataManager.getCoins(((Player) sender).getUniqueId())) {
+                sender.sendMessage("§cNie możesz przelać więcej coinsów niż posiadasz!");
+                return true;
+            }
+
+            dataManager.addCoins(target.getUniqueId(), amount);
+            dataManager.removeCoins(((Player) sender).getUniqueId(), amount);
+            sender.sendMessage("§aPrzelałeś " + amount + " coinsów graczowi " + target.getName());
+            target.sendMessage("§fOtrzymałeś §a" + amount + " coinsów §fod gracza §a" + sender.getName());
+            return true;
+        }
+
         if (args[0].equalsIgnoreCase("give"))
         {
             if (sender instanceof Player && !sender.hasPermission("lizardcoins.give")) {
@@ -81,7 +131,14 @@ public class MobCoinsCommand implements CommandExecutor, TabCompleter {
             }
 
             Player target = plugin.getServer().getPlayer(args[1]);
-            int amount = Integer.parseInt(args[2]);
+            double amount;
+
+            try {
+                amount = Double.parseDouble(args[2]);
+            } catch (NumberFormatException e) {
+                sender.sendMessage("§cIlość coinsów musi być liczbą!");
+                return true;
+            }
 
             if (target == null)
             {
@@ -114,7 +171,14 @@ public class MobCoinsCommand implements CommandExecutor, TabCompleter {
             }
 
             Player target = plugin.getServer().getPlayer(args[1]);
-            int amount = Integer.parseInt(args[2]);
+            double amount;
+
+            try {
+                amount = Double.parseDouble(args[2]);
+            } catch (NumberFormatException e) {
+                sender.sendMessage("§cIlość coinsów musi być liczbą!");
+                return true;
+            }
 
             if (target == null)
             {
@@ -136,6 +200,9 @@ public class MobCoinsCommand implements CommandExecutor, TabCompleter {
             List<String> completions = new ArrayList<>();
             if ("sklep".startsWith(args[0].toLowerCase())) {
                 completions.add("sklep");
+            }
+            if ("przelej".startsWith(args[0].toLowerCase())) {
+                completions.add("przelej");
             }
             if ("reload".startsWith(args[0].toLowerCase()) && sender.hasPermission("lizardcoins.reload")) {
                 completions.add("reload");
