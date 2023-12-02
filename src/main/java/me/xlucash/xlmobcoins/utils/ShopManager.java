@@ -50,7 +50,7 @@ public class ShopManager {
                     updateNormalShop();
                     schedulePremiumShopRotation();
                 }
-            }.runTaskLater(plugin, normalDelay * 20);
+            }.runTaskLaterAsynchronously(plugin, normalDelay * 20);
         } else {
             new BukkitRunnable() {
                 @Override
@@ -58,7 +58,7 @@ public class ShopManager {
                     updatePremiumShop();
                     scheduleNormalShopRotation();
                 }
-            }.runTaskLater(plugin, premiumDelay * 20);
+            }.runTaskLaterAsynchronously(plugin, premiumDelay * 20);
         }
     }
 
@@ -70,7 +70,7 @@ public class ShopManager {
                 updateNormalShop();
                 schedulePremiumShopRotation();
             }
-        }.runTaskLater(plugin, normalDelay * 20);
+        }.runTaskLaterAsynchronously(plugin, normalDelay * 20);
     }
 
     private void schedulePremiumShopRotation() {
@@ -81,7 +81,7 @@ public class ShopManager {
                 updatePremiumShop();
                 scheduleNormalShopRotation();
             }
-        }.runTaskLater(plugin, premiumDelay * 20);
+        }.runTaskLaterAsynchronously(plugin, premiumDelay * 20);
     }
 
     private void updateNormalShop() {
